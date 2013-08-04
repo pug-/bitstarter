@@ -1,9 +1,9 @@
 var express = require('express');
 var app = express();
 app.use(express.logger());
-
+var string1 = "Hello world from string variable";
 app.get('/', function(request, response) {
-  response.send('Hello World!');
+  response.send(string1);
 });
 
 var port = process.env.PORT || 5000;
