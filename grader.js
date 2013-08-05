@@ -21,20 +21,22 @@ References:
    - https://developer.mozilla.org/en-US/docs/JSON#JSON_in_Firefox_2
 */
 
+var sys = require('util');
+var rest = require('restler');
+var sleep = require('sleep');
 var fs = require('fs');
-var request = require('request');
-var util = require('util');
 var program = require('commander');
 var cheerio = require('cheerio');
 var HTMLFILE_DEFAULT = "index.html";
 var CHECKSFILE_DEFAULT = "checks.json";
 var URL_DEFAULT = "http://pacific-peak-4621.herokuapp.com/";
 
+
 var assertFileExists = function(infile) {
     var instr = infile.toString();
     if(!fs.existsSync(instr)) {
 	console.log("%s does not exist. Exiting.", instr);
-	process.exit(1);
+	process.exit(1); // http://nodejs.org/api/process.html#process_process_exit_code
     }
     return instr;
 };
@@ -59,27 +61,35 @@ var checkHtmlFile = function(htmlfile, checksfile) {
 };
 
 var clone = function(fn) {
+    // Workaround for commander.js issue.
+    // http://stackoverflow.com/a/6772648
     return fn.bind({});
 };
 
+var getHtmlfile = function(url) {
+    var urlfile = "download.html";
+    rest.get(url).on('complete', function(result) {
+        if (result instanceof Error){
+sys.puts('Error: ' + result.message);
+        } else{
+fs.writeFileSync(urlfile,result);
+        }
+    });                                                                                                                                                                           return urlfile;
+};
+
+
+
+
+
+
 if(require.main == module) {
     program
-	.option('-c, --checks <check_file>', 'Path to checks.json', clone(assertFileExists))
+	.option('-c, --checks <check_file>', 'Path to checks.json', clone(assertFileExists), CHECKSFILE_DEFAULT)
 	.option('-f, --file <html_file>', 'Path to index.html', clone(assertFileExists), HTMLFILE_DEFAULT)
-        .option('-u, --url <url>','url of the file to check', URL_DEFAULT)
+	.option('-u, --url <url_html_file>','url of index.html',URL_DEFAULT) 
 	.parse(process.argv);
 
-    var urlfile = 'downloadedhtml.html';
-    rest.get(string1).on('complete', function(result) {
-  if (result instanceof Error) {
-    sys.puts('Error: ' + result.message);
-    this.retry(5000);
-  } else {
-     console.error("%s", result);
-     fs.writeFileSync("downloadedhtml.html",result);
-  }
-});
-    var checkFile = 
+
     var checkJson = checkHtmlFile(program.file, program.checks);
     var outJson = JSON.stringify(checkJson, null, 4);
     console.log(outJson);
