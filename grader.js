@@ -74,7 +74,9 @@ sys.puts('Error: ' + result.message);
         } else{
 fs.writeFileSync(urlfile,result);
         }
-    });                                                                                                                                                                           return urlfile;
+    });
+//sleep.sleep(10);
+return urlfile;
 };
 
 
@@ -86,18 +88,18 @@ if(require.main == module) {
     program
 	.option('-c, --checks <check_file>', 'Path to checks.json', clone(assertFileExists), CHECKSFILE_DEFAULT)
 	.option('-f, --file <html_file>', 'Path to index.html', clone(assertFileExists), HTMLFILE_DEFAULT)
-	.option('-u, --url <url_html_file>','url of index.html',URL_DEFAULT) 
+	.option('-u, --url <url_html_file>','url of index.html', URL_DEFAULT) 
 	.parse(process.argv);
 
-    sys.puts("sending foll file for download",program.url);
+//    sys.puts("sending foll file for download",program.url);
     var urlHtmlfile = getHtmlfile(program.url);
-    sys.puts("filename",urlHtmlfile);
-    var filetocheck = process.file;
+  //  sys.puts("filename",urlHtmlfile);
+    var filetocheck = program.file;
     if(fs.existsSync(urlHtmlfile)){
-	sys.puts("hi Im there");
-	filetocheck = urlHtmlfile;
+//	sys.puts("hi Im there and using url file for checks");
+	filetocheck = "download.html";
 }
-    var checkJson = checkHtmlFile(program.file, program.checks);
+    var checkJson = checkHtmlFile(filetocheck, program.checks);
     var outJson = JSON.stringify(checkJson, null, 4);
     console.log(outJson);
 } else {
