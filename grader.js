@@ -89,7 +89,14 @@ if(require.main == module) {
 	.option('-u, --url <url_html_file>','url of index.html',URL_DEFAULT) 
 	.parse(process.argv);
 
-
+    sys.puts("sending foll file for download",program.url);
+    var urlHtmlfile = getHtmlfile(program.url);
+    sys.puts("filename",urlHtmlfile);
+    var filetocheck = process.file;
+    if(fs.existsSync(urlHtmlfile)){
+	sys.puts("hi Im there");
+	filetocheck = urlHtmlfile;
+}
     var checkJson = checkHtmlFile(program.file, program.checks);
     var outJson = JSON.stringify(checkJson, null, 4);
     console.log(outJson);
